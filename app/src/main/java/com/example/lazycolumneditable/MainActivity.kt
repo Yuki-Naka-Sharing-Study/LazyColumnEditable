@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -62,7 +64,7 @@ fun ItemListScreen(viewModel: ItemViewModel) {
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         )
-        // ボタン
+        // 追加ボタン
         Button(
             onClick = {
                 val name = nameState.value
@@ -85,6 +87,7 @@ fun ItemListScreen(viewModel: ItemViewModel) {
             Text(if (editingItem != null) "Update Item" else "Add Item")
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         // リスト表示
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(items) { item ->
@@ -100,7 +103,19 @@ fun ItemListScreen(viewModel: ItemViewModel) {
                         .background(Color.LightGray)
                         .padding(16.dp)
                 ) {
-                    Text("${item.name} - ${item.quantity}")
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("${item.name} - ${item.quantity}")
+                    }
+                    // 削除ボタン
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                viewModel.deleteItem(item)
+                            }
+                        }
+                    ) {
+                        Icon(Icons.Default.Delete, contentDescription = "Delete Item")
+                    }
                 }
             }
         }
